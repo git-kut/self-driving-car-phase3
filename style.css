@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  background: darkgray;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+  margin: 2px;
+}
+
+#carCanvas {
+  background-color: forestgreen;
+}
+
+#networkCanvas {
+  background-color: rgb(70, 70, 70);
+}
+
+#miniMapCanvas {
+  background-color: rgb(70, 70, 70);
+}
