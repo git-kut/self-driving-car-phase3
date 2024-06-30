@@ -20,7 +20,7 @@ import Start from "./markings/start.js";
 class World {
   constructor(
     graph,
-    roadWidth = 100,
+    roadWidth = 80,
     roadRoundness = 10,
     buildingWidth = 150,
     buildingMinLength = 150,
@@ -74,15 +74,15 @@ class World {
       }
     }
 
-    ctx.globalAlpha = 0.2;
+    // ctx.globalAlpha = 0.2;
     for (const car of this.cars) {
-      car.draw(ctx);
+      car.draw(ctx, true);
     }
 
-    ctx.globalAlpha = 1;
-    if (this.bestCar) {
-      this.bestCar.draw(ctx, true);
-    }
+    // ctx.globalAlpha = 1;
+    // if (this.bestCar) {
+    //   this.bestCar.draw(ctx, true);
+    // }
 
     const items = [...this.buildings, ...this.trees].filter(
       (item) => item.base.distanceToPoint(viewPoint) < renderRadius
@@ -160,10 +160,6 @@ class World {
           ? "green"
           : "yellow";
 
-      console.log(
-        `Center: ${center}, Tick: ${cTick}, GreenYellowIndex: ${greenYellowIndex}, State: ${greenYellowState}`
-      );
-
       for (let i = 0; i < center.lights.length; i++) {
         if (i == greenYellowIndex) {
           center.lights[i].state = greenYellowState;
@@ -204,7 +200,7 @@ class World {
       this.envolopes.map((envelope) => envelope.polygon)
     );
 
-    this.buildings = this.#generateBuildings();
+    // this.buildings = this.#generateBuildings();
 
     this.trees = this.#generateTrees();
 
@@ -357,8 +353,8 @@ class World {
   generateCorridor(start, target) {
     const startSegment = getNearestSegment(start, this.graph.segments);
     const finalSegment = getNearestSegment(target, this.graph.segments);
-
     const { point: projectedStart } = startSegment.projectPoint(start);
+    console.log(projectedStart);
     const { point: projectedTarget } = finalSegment.projectPoint(target);
 
     this.graph.points.push(projectedStart);

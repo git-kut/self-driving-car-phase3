@@ -5,23 +5,24 @@ import { Visualizer } from "./visualizer.js";
 import World from "./world/js/world.js";
 import Graph from "./world/js/math/graph.js";
 import Viewport from "./world/js/viewport.js";
-import { angle, scale } from "./world/js/math/utils.js";
+import { angle, distance, scale, subtract } from "./world/js/math/utils.js";
 import Start from "./world/js/markings/start.js";
 import Point from "./world/js/primitives/point.js";
-import world from "./world/saves/pathFinding.js";
+import world from "./world/saves/roadWidthTest.js";
 import MiniMap from "./miniMap.js";
 import carInfo from "./saves/carSave.js";
 import Target from "./world/js/markings/target.js";
+import { polygonIntersect } from "./utils.js";
 
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = window.innerWidth - 330;
 
 const networkCanvas = document.getElementById("networkCanvas");
-networkCanvas.width = 300;
+networkCanvas.width = 330;
 
 const miniMapCanvas = document.getElementById("miniMapCanvas");
-miniMapCanvas.height = 300;
-miniMapCanvas.width = 300;
+miniMapCanvas.height = 335;
+miniMapCanvas.width = 330;
 
 carCanvas.height = window.innerHeight;
 networkCanvas.height = window.innerHeight - 300;
@@ -37,25 +38,31 @@ const miniMap = new MiniMap(miniMapCanvas, world.graph, 300);
 // const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 // const car = new Car(road.getLaneCenter(1), 100, 30, 50, "AI");
 
-const cars = generateCars(1);
+const cars = generateCars();
 let bestCar = cars[0];
-if (localStorage.getItem("bestBrain")) {
+/* if (localStorage.getItem("bestBrain")) {
   for (let i = 0; i < cars.length; i++) {
     cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
 
     if (i != 0) {
-      NeuralNetwork.mutate(cars[i].brain, 1);
+      NeuralNetwork.mutate(cars[i].brain, 0.9);
     }
   }
-}
+} */
 const traffic = [];
 let roadBorders = [];
-const target = world.markings.find((marking) => marking instanceof Target);
-if (target) {
-  world.generateCorridor(bestCar, target.center);
-  roadBorders = world.corridor.map((segment) => [segment.p1, segment.p2]);
+
+const targets = world.markings.filter((marking) => marking instanceof Target);
+if (targets.length > 0) {
+  for (let i = 0; i < targets.length; i++) {
+    world.generateCorridor(cars[i], targets[i].center);
+    roadBorders = world.corridor.map((segment) => [segment.p1, segment.p2]);
+    cars[i].roadBorders = roadBorders;
+    cars[i].target = targets[i];
+  }
 } else {
   roadBorders = world.roadBorders.map((segment) => [segment.p1, segment.p2]);
+  cars[0].roadBorders = roadBorders;
 }
 
 animate();
@@ -72,49 +79,71 @@ function discard() {
 window.save = save;
 window.discard = discard;
 
-function generateCars(num) {
+function targetSelect() {
+  bestCar.speed = 0;
+  const selectElement = document.getElementById("targets");
+  const selectedValue = selectElement.value;
+  world.generateCorridor(bestCar, targets[selectedValue].center);
+  roadBorders = world.corridor.map((segment) => [segment.p1, segment.p2]);
+  bestCar.roadBorders = roadBorders;
+  bestCar.target = targets[selectedValue];
+}
+window.targetSelect = targetSelect;
+
+function generateCars() {
   const startingPoints = world.markings.filter(
     (marking) => marking instanceof Start
   );
-  const startingPoint =
-    startingPoints.length > 0 ? startingPoints[0].center : new Point(100, 100);
-  const startingDirection =
-    startingPoints.length > 0 ? startingPoints[0].direction : new Point(0, -1);
-  const startingAngle = -angle(startingDirection) + Math.PI / 2;
   const cars = [];
-  for (let i = 1; i <= num; i++) {
-    const car = new Car(
-      startingPoint.x,
-      startingPoint.y,
-      30,
-      50,
-      "AI",
-      startingAngle,
-      3,
-      "gray"
-    );
-    car.load(carInfo);
-    cars.push(car);
+  if (startingPoints.length > 0) {
+    for (const startingPoint of startingPoints) {
+      const startingCoordinates = startingPoint.center;
+      const startingDirection = startingPoint.direction;
+      const startingAngle = -angle(startingDirection) + Math.PI / 2;
+      const car = new Car(
+        world,
+        startingCoordinates.x,
+        startingCoordinates.y,
+        20,
+        33,
+        "AI",
+        startingAngle,
+        3
+      );
+      car.startingCoordinates = startingCoordinates;
+      car.load(carInfo);
+      cars.push(car);
+    }
   }
+
   return cars;
 }
 
 function animate(time) {
-  for (let i = 0; i < traffic.length; i++) {
+  /* for (let i = 0; i < traffic.length; i++) {
     traffic[i].update(roadBorders, cars[0]);
-  }
+    console.log(traffic);
+  } */
   for (let car of cars) {
-    car.update(roadBorders, traffic);
+    car.update(car.roadBorders, cars);
+    if (distance(car.target.center, car) < 10) {
+      console.log("test");
+      const index = targets.indexOf(car.target);
+      car.target = targets[(index + 1) % targets.length];
+      world.generateCorridor(car, car.target.center);
+      roadBorders = world.corridor.map((segment) => [segment.p1, segment.p2]);
+      car.roadBorders = roadBorders;
+    }
   }
-  bestCar = cars.find(
-    (car) => car.mile == Math.max(...cars.map((car) => car.mile))
-  );
+  // bestCar = cars.find(
+  //   (car) => car.mile == Math.max(...cars.map((car) => car.mile))
+  // );
   world.cars = cars;
   world.bestCar = bestCar;
 
-  for (let i = 0; i < traffic.length; i++) {
-    traffic[i].draw(carCtx, "red");
-  }
+  // for (let i = 0; i < traffic.length; i++) {
+  //   traffic[i].draw(carCtx, "red");
+  // }
 
   viewport.offset.x = -bestCar.x;
   viewport.offset.y = -bestCar.y;

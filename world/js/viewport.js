@@ -56,7 +56,8 @@ class Viewport {
     const direction = Math.sign(event.deltaY);
     const scale = 0.1;
     this.zoom += direction * scale;
-    this.zoom = Math.max(1, Math.min(5, this.zoom));
+    this.zoom = Math.max(1, Math.min(50, this.zoom));
+    console.log(this.zoom);
   }
 
   #handleMouseUp(event) {

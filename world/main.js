@@ -13,6 +13,7 @@ import LightEditor from "./js/editors/lightEditor.js";
 import YieldEditor from "./js/editors/yieldEditor.js";
 import TargetEditor from "./js/editors/targetEditor.js";
 import osm from "./js/math/osm.js";
+import Building from "./js/items/building.js";
 
 myCanvas.height = 600;
 myCanvas.width = 600;
@@ -76,6 +77,8 @@ window.removeAll = removeAll; */
 function remove() {
   graphEditor.remove();
   world.markings.length = 0;
+  world.buildings.length = 0;
+  world.trees.length = 0;
 }
 window.remove = remove;
 
@@ -146,8 +149,11 @@ function parseOsmData() {
     return;
   }
   const res = osm.parseRoads(JSON.parse(osmDataContainer.value));
+  const buildingBases = osm.parseBuildings(JSON.parse(osmDataContainer.value));
   world.graph.points = res.points;
   world.graph.segments = res.segments;
+  console.log(buildingBases);
+  world.buildings = buildingBases;
   closeOsmPanel();
 }
 window.parseOsmData = parseOsmData;
@@ -162,7 +168,10 @@ function disableEditors() {
 
 const worldSave = localStorage.getItem("world");
 const worldInfo = worldSave ? JSON.parse(worldSave) : null;
-let world = worldInfo ? World.load(worldInfo) : new World(new Graph());
+let world = /* worldInfo ? World.load(worldInfo) :  */ new World(
+  new Graph(),
+  80
+);
 
 const graph = world.graph;
 

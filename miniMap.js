@@ -12,6 +12,10 @@ class MiniMap {
 
   update(viewPoint) {
     this.ctx.clearRect(0, 0, this.size, this.size);
+    this.ctx.beginPath();
+    this.ctx.arc(this.size / 2, this.size / 2, this.size / 2, 0, 360);
+    this.ctx.fillStyle = "rgb(70, 70, 70)";
+    this.ctx.fill();
     const scaler = 0.05;
     const scaledViewPoint = scale(viewPoint, -scaler);
     this.ctx.save();

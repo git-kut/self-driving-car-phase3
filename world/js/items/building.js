@@ -66,13 +66,15 @@ class Building {
     }
     ceiling.draw(ctx, { fill: "white", stroke: "white", linewidth: 8 });
 
-    for (const polygon of roofPolys) {
-      polygon.draw(ctx, {
-        fill: "#D44",
-        stroke: "#C44",
-        linewidth: 8,
-        join: "round",
-      });
+    if (this.base.points.length == 5) {
+      for (const polygon of roofPolys) {
+        polygon.draw(ctx, {
+          fill: "#D44",
+          stroke: "#C44",
+          linewidth: 8,
+          join: "round",
+        });
+      }
     }
   }
 

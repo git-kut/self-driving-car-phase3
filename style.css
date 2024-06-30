@@ -1,10 +1,9 @@
 body {
   margin: 0;
-  background: darkgray;
+  background: white;
   overflow: hidden;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 #buttons {
@@ -26,5 +25,37 @@ button {
 }
 
 #miniMapCanvas {
-  background-color: rgb(70, 70, 70);
+  background-color: white;
+}
+
+select {
+  padding: 7px 10px;
+  width: 150px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-family: Arial;
+}
+
+/* select:focus {
+  outline: none;
+} */
+
+.dropdown-div {
+  position: absolute;
+  left: 35%;
+  top: 20px;
+  /* transform: translate(-50%, 0); */
+  font-family: Arial;
+  color: white;
+  font-size: 20px;
+  /* width: 200px; */
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  background-color: rgba(70, 70, 70, 0.6);
+  font-weight: bold;
+  /* padding-top: 9px; */
+  display: flex;
+  /* left: 710px; */
+  gap: 15px;
+  align-items: center;
 }

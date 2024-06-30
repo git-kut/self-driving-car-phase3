@@ -5,6 +5,7 @@ import { polygonIntersect, getRandomColor } from "./utils.js";
 
 class Car {
   constructor(
+    world,
     x,
     y,
     width,
@@ -14,6 +15,7 @@ class Car {
     maxSpeed = 3,
     color = getRandomColor()
   ) {
+    this.world = world;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -27,6 +29,9 @@ class Car {
     this.useBrain = controlType == "AI";
     this.mile = 0;
     this.color = color;
+    this.roadBorders = null;
+    this.target = null;
+    this.startingCoordinates = null;
 
     if (controlType != "DUMMY") {
       this.sensor = new Sensor(this);
@@ -108,13 +113,26 @@ class Car {
       this.#move();
       this.mile += this.speed;
       this.polygon = this.#createPolygon();
-      this.damaged = this.#detectDamage(roadBorders, traffic);
+      this.damaged = this.#detectDamage(
+        roadBorders,
+        traffic.filter((car) => car !== this)
+      );
     }
     if (this.sensor) {
-      this.sensor.update(roadBorders, traffic);
+      this.sensor.update(
+        roadBorders,
+        traffic.filter((car) => car !== this),
+        this.world.markings
+      );
       const offsets = this.sensor.readings
         .map((sensor) => (sensor == null ? 0 : 1 - sensor.offset))
         .concat([this.speed / this.maxSpeed]);
+      console.log(
+        this.sensor.readings.map((sensor) =>
+          sensor == null ? 0 : 1 - sensor.offset
+        )
+      );
+      console.log(offsets);
       const outputs = NeuralNetwork.feedForward(offsets, this.brain);
       if (this.useBrain) {
         this.controls.forward = outputs[0];

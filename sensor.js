@@ -1,4 +1,6 @@
 import { lerp, getIntersection } from "./utils.js";
+import Light from "./world/js/markings/light.js";
+import Stop from "./world/js/markings/stop.js";
 import Point from "./world/js/primitives/point.js";
 
 class Sensor {
@@ -12,11 +14,13 @@ class Sensor {
     this.readings = [];
   }
 
-  update(roadBorders, traffic) {
+  update(roadBorders, traffic, markings) {
     this.#castRays();
     this.readings = [];
     for (let i = 0; i < this.rays.length; i++) {
-      this.readings.push(this.#getReading(this.rays[i], roadBorders, traffic));
+      this.readings.push(
+        this.#getReading(this.rays[i], roadBorders, traffic, markings)
+      );
     }
   }
 
@@ -40,7 +44,7 @@ class Sensor {
     }
   }
 
-  #getReading(ray, roadBorders, traffic) {
+  #getReading(ray, roadBorders, traffic, markings) {
     let touches = [];
 
     for (let i = 0; i < roadBorders.length; i++) {
@@ -66,6 +70,35 @@ class Sensor {
         if (touch) {
           touches.push(touch);
         }
+      }
+    }
+
+    const stopMarking = markings.filter((marking) => marking instanceof Stop);
+    for (let i = 0; i < stopMarking.length; i++) {
+      const touch = getIntersection(
+        ray[0],
+        ray[1],
+        stopMarking[i].border.p1,
+        stopMarking[i].border.p2
+      );
+      if (touch) {
+        touches.push(touch);
+      }
+    }
+
+    const trafficLightMarking = markings.filter(
+      (marking) => marking instanceof Light
+    );
+    for (let i = 0; i < trafficLightMarking.length; i++) {
+      const touch = getIntersection(
+        ray[0],
+        ray[1],
+        trafficLightMarking[i].border.p1,
+        trafficLightMarking[i].border.p2
+      );
+      if (touch && trafficLightMarking[i].state !== "green") {
+        console.log(trafficLightMarking[i].state);
+        touches.push(touch);
       }
     }
 

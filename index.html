@@ -8,11 +8,20 @@
   </head>
 
   <body>
-    <canvas id="carCanvas"></canvas>
-    <div id="buttons">
+    <div class="dropdown-div">
+      <label class="dropdown">Going to</label>
+      <select onchange="targetSelect()" name="targets" id="targets">
+        <option value="0">Commerce</option>
+        <option value="1">Opera Building</option>
+        <option value="2">Komvux</option>
+        <option value="3">St.Helen Park</option>
+      </select>
+    </div>
+    <canvas id="carCanvas"> </canvas>
+    <!-- <div id="buttons">
       <button onclick="save()">Save</button>
       <button onclick="discard()">Discard</button>
-    </div>
+    </div> -->
     <div>
       <canvas id="networkCanvas"></canvas>
       <canvas id="miniMapCanvas"></canvas>
