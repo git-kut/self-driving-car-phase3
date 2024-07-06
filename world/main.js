@@ -168,10 +168,7 @@ function disableEditors() {
 
 const worldSave = localStorage.getItem("world");
 const worldInfo = worldSave ? JSON.parse(worldSave) : null;
-let world = /* worldInfo ? World.load(worldInfo) :  */ new World(
-  new Graph(),
-  80
-);
+let world = worldInfo ? World.load(worldInfo) : new World(new Graph(), 80);
 
 const graph = world.graph;
 
@@ -202,10 +199,13 @@ const tools = {
 
 // NOTE: STROKE FOR POLYGON CLASS DO NOT WORK
 // NOTE: WHILE MOVEMENT WITH ID 1 THE ANIMATION STOPS
-
+console.log(world.graph);
+console.log(
+  viewport.offset.x - world.graph.points[0].x,
+  viewport.offset.y - world.graph.points[0].y
+);
 setMode("graph");
 animate();
-
 function animate() {
   viewport.reset();
   if (graph.hash() != oldGraphHash) {

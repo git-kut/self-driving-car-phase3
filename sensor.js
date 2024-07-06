@@ -72,7 +72,7 @@ class Sensor {
         }
       }
     }
-
+    /* 
     const stopMarking = markings.filter((marking) => marking instanceof Stop);
     for (let i = 0; i < stopMarking.length; i++) {
       const touch = getIntersection(
@@ -101,7 +101,7 @@ class Sensor {
         touches.push(touch);
       }
     }
-
+    */
     if (touches.length == 0) {
       return null;
     } else {

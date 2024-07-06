@@ -2,6 +2,9 @@ import Controls from "./controls.js";
 import { NeuralNetwork } from "./network.js";
 import Sensor from "./sensor.js";
 import { polygonIntersect, getRandomColor } from "./utils.js";
+import Stop from "./world/js/markings/stop.js";
+import Light from "./world/js/markings/light.js";
+import { getIntersection } from "./utils.js";
 
 class Car {
   constructor(
@@ -119,20 +122,61 @@ class Car {
       );
     }
     if (this.sensor) {
+      const stopMarking = this.world.markings.filter(
+        (marking) => marking instanceof Stop
+      );
+      let stopInput = null; // Initialize to null to check for the first intersection
+      for (let i = 0; i < stopMarking.length; i++) {
+        for (let j = 0; j < this.sensor.rays.length; j++) {
+          const touch = getIntersection(
+            this.sensor.rays[j][0],
+            this.sensor.rays[j][1],
+            stopMarking[i].border.p1,
+            stopMarking[i].border.p2
+          );
+          if (touch) {
+            const potentialStopInput = 1 - touch.offset;
+            if (stopInput === null || potentialStopInput > stopInput) {
+              stopInput = potentialStopInput;
+            }
+          }
+        }
+      }
+      if (stopInput === null) stopInput = 0; // If no intersection was found, set to 0
+
+      const trafficLightMarking = this.world.markings.filter(
+        (marking) => marking instanceof Light
+      );
+      let lightInput = null; // Initialize to null to check for the first intersection
+      for (let i = 0; i < trafficLightMarking.length; i++) {
+        for (let j = 0; j < this.sensor.rays.length; j++) {
+          const touch = getIntersection(
+            this.sensor.rays[j][0],
+            this.sensor.rays[j][1],
+            trafficLightMarking[i].border.p1,
+            trafficLightMarking[i].border.p2
+          );
+          if (touch && trafficLightMarking[i].state !== "green") {
+            const potentialLightInput = 1 - touch.offset;
+            if (lightInput === null || potentialLightInput > lightInput) {
+              lightInput = potentialLightInput;
+            }
+          }
+        }
+      }
+      if (lightInput === null) lightInput = 0; // If no intersection was found, set to 0
+
       this.sensor.update(
         roadBorders,
-        traffic.filter((car) => car !== this),
-        this.world.markings
+        traffic.filter((car) => car !== this)
       );
+      console.log(stopInput, lightInput);
       const offsets = this.sensor.readings
         .map((sensor) => (sensor == null ? 0 : 1 - sensor.offset))
-        .concat([this.speed / this.maxSpeed]);
-      console.log(
-        this.sensor.readings.map((sensor) =>
-          sensor == null ? 0 : 1 - sensor.offset
-        )
-      );
-      console.log(offsets);
+        .concat([this.speed / this.maxSpeed])
+        .concat([stopInput])
+        .concat([lightInput]);
+
       const outputs = NeuralNetwork.feedForward(offsets, this.brain);
       if (this.useBrain) {
         this.controls.forward = outputs[0];

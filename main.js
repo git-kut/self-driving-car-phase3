@@ -104,8 +104,8 @@ function generateCars() {
         world,
         startingCoordinates.x,
         startingCoordinates.y,
-        20,
-        33,
+        25,
+        40,
         "AI",
         startingAngle,
         3
@@ -127,7 +127,6 @@ function animate(time) {
   for (let car of cars) {
     car.update(car.roadBorders, cars);
     if (distance(car.target.center, car) < 10) {
-      console.log("test");
       const index = targets.indexOf(car.target);
       car.target = targets[(index + 1) % targets.length];
       world.generateCorridor(car, car.target.center);
