@@ -95,6 +95,11 @@ class World {
     for (const item of items) {
       item.draw(ctx, viewPoint);
     }
+
+    for (const point of this.graph.points) {
+      point.draw(ctx)
+    }
+    
   }
 
   static load(info) {
@@ -111,7 +116,9 @@ class World {
       (border) => new Segment(border.p1, border.p2)
     );
     world.buildings = info.buildings.map((envelope) => Building.load(envelope));
-    world.trees = info.trees.map((tree) => new Tree(tree.point, info.treeSize));
+    // if (info.trees.length > 0) {
+    //   world.trees = info.trees.map((tree) => new Tree(tree.point, info.treeSize));
+    // }
     world.laneGuides = info.laneGuides.map(
       (guide) => new Segment(guide.p1, guide.p2)
     );
@@ -202,7 +209,7 @@ class World {
 
     // this.buildings = this.#generateBuildings();
 
-    this.trees = this.#generateTrees();
+    // this.trees = this.#generateTrees();
 
     this.laneGuides.length = 0;
     this.laneGuides.push(...this.#generateLaneGuides());
@@ -304,7 +311,7 @@ class World {
 
     const trees = [];
     let tryCount = 0;
-    while (tryCount < 100) {
+    while (tryCount < 50) {
       const point = new Point(
         lerp(left, right, Math.random()),
         lerp(top, bottom, Math.random())
@@ -351,6 +358,7 @@ class World {
   }
 
   generateCorridor(start, target) {
+
     const startSegment = getNearestSegment(start, this.graph.segments);
     const finalSegment = getNearestSegment(target, this.graph.segments);
     const { point: projectedStart } = startSegment.projectPoint(start);

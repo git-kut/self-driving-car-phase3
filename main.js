@@ -8,7 +8,7 @@ import Viewport from "./world/js/viewport.js";
 import { angle, distance, scale, subtract } from "./world/js/math/utils.js";
 import Start from "./world/js/markings/start.js";
 import Point from "./world/js/primitives/point.js";
-import world from "./world/saves/roadWidthTest.js";
+import world from "./world/saves/worldFetcher.js";
 import MiniMap from "./miniMap.js";
 import carInfo from "./saves/carSave.js";
 import Target from "./world/js/markings/target.js";
@@ -49,12 +49,12 @@ let bestCar = cars[0];
     }
   }
 } */
-const traffic = [];
+
 let roadBorders = [];
 
 const targets = world.markings.filter((marking) => marking instanceof Target);
 if (targets.length > 0) {
-  for (let i = 0; i < targets.length; i++) {
+  for (let i = 0; i < cars.length; i++) {
     world.generateCorridor(cars[i], targets[i].center);
     roadBorders = world.corridor.map((segment) => [segment.p1, segment.p2]);
     cars[i].roadBorders = roadBorders;
@@ -95,10 +95,10 @@ function generateCars() {
     (marking) => marking instanceof Start
   );
   const cars = [];
-  if (startingPoints.length > 0) {
-    for (const startingPoint of startingPoints) {
-      const startingCoordinates = startingPoint.center;
-      const startingDirection = startingPoint.direction;
+  if (startingPoints.length > 0) 
+    for (let i = 0; i < startingPoints.length; i++) {
+      const startingCoordinates = startingPoints[i].center;
+      const startingDirection = startingPoints[i].direction;
       const startingAngle = -angle(startingDirection) + Math.PI / 2;
       const car = new Car(
         world,
@@ -112,18 +112,17 @@ function generateCars() {
       );
       car.startingCoordinates = startingCoordinates;
       car.load(carInfo);
-      cars.push(car);
+      cars.push(car)
     }
-  }
 
   return cars;
 }
 
 function animate(time) {
-  /* for (let i = 0; i < traffic.length; i++) {
-    traffic[i].update(roadBorders, cars[0]);
-    console.log(traffic);
-  } */
+  //for (let i = 0; i < traffic.length; i++) {
+  //  traffic[i].update(roadBorders, traffic);
+  //}
+
   for (let car of cars) {
     car.update(car.roadBorders, cars);
     if (distance(car.target.center, car) < 10) {

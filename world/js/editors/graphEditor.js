@@ -89,7 +89,6 @@ class GraphEditor {
         return;
       }
       this.graph.addPoint(this.mouseCoordinates);
-      console.log(this.graph.points);
       this.#select(this.mouseCoordinates);
       this.hovered = this.mouseCoordinates;
     }

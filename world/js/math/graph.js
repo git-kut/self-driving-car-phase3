@@ -18,7 +18,8 @@ class Graph {
         )
     );
 
-    return new Graph(points, segments);
+    const graph = new Graph(points, segments);
+    return graph;
   }
 
   draw(ctx) {

@@ -15,7 +15,7 @@ class Car {
     height,
     controlType,
     angle = 0,
-    maxSpeed = 3,
+    maxSpeed = 5,
     color = getRandomColor()
   ) {
     this.world = world;
