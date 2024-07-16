@@ -188,7 +188,7 @@ class World {
           degree++;
         }
       }
-      if (degree > 2) {
+      if (degree >= 2) {
         intersections.push(point);
       }
     }
