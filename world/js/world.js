@@ -68,11 +68,11 @@ class World {
       seg.draw(ctx, { color: "white", width: 4 });
     }
 
-    if (this.corridor) {
-      for (const seg of this.corridor) {
-        seg.draw(ctx, { color: "red", width: 4 });
-      }
-    }
+    // if (this.corridor) {
+    //   for (const seg of this.corridor) {
+    //     seg.draw(ctx, { color: "red", width: 4 });
+    //   }
+    // }
 
     // ctx.globalAlpha = 0.2;
     for (const car of this.cars) {
@@ -91,15 +91,13 @@ class World {
       (a, b) =>
         b.base.distanceToPoint(viewPoint) - a.base.distanceToPoint(viewPoint)
     );
-
     for (const item of items) {
       item.draw(ctx, viewPoint);
     }
 
-    for (const point of this.graph.points) {
-      point.draw(ctx)
-    }
-    
+    // for (const point of this.graph.points) {
+    //   point.draw(ctx)
+    // }
   }
 
   static load(info) {
@@ -358,7 +356,6 @@ class World {
   }
 
   generateCorridor(start, target) {
-
     const startSegment = getNearestSegment(start, this.graph.segments);
     const finalSegment = getNearestSegment(target, this.graph.segments);
     const { point: projectedStart } = startSegment.projectPoint(start);

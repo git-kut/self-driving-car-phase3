@@ -30,7 +30,7 @@ button {
 
 select {
   padding: 7px 10px;
-  width: 150px;
+  width: 250px;
   border-radius: 5px;
   font-size: 18px;
   font-family: Arial;
@@ -42,7 +42,7 @@ select {
 
 .dropdown-div {
   position: absolute;
-  left: 35%;
+  left: 33%;
   top: 20px;
   /* transform: translate(-50%, 0); */
   font-family: Arial;

@@ -10,7 +10,7 @@ import Start from "./world/js/markings/start.js";
 import Point from "./world/js/primitives/point.js";
 import world from "./world/saves/worldFetcher.js";
 import MiniMap from "./miniMap.js";
-import carInfo from "./saves/carSave.js";
+import fetchCarData from "./saves/carSave.js";
 import Target from "./world/js/markings/target.js";
 import { polygonIntersect } from "./utils.js";
 
@@ -95,7 +95,7 @@ function generateCars() {
     (marking) => marking instanceof Start
   );
   const cars = [];
-  if (startingPoints.length > 0) 
+  if (startingPoints.length > 0)
     for (let i = 0; i < startingPoints.length; i++) {
       const startingCoordinates = startingPoints[i].center;
       const startingDirection = startingPoints[i].direction;
@@ -111,8 +111,8 @@ function generateCars() {
         3
       );
       car.startingCoordinates = startingCoordinates;
-      car.load(carInfo);
-      cars.push(car)
+      carLoader(car);
+      cars.push(car);
     }
 
   return cars;
@@ -127,10 +127,13 @@ function animate(time) {
     car.update(car.roadBorders, cars);
     if (distance(car.target.center, car) < 10) {
       const index = targets.indexOf(car.target);
-      car.target = targets[(index + 1) % targets.length];
+      const newTargetIndex = (index + 1) % targets.length;
+      car.target = targets[newTargetIndex];
       world.generateCorridor(car, car.target.center);
       roadBorders = world.corridor.map((segment) => [segment.p1, segment.p2]);
       car.roadBorders = roadBorders;
+      const selectElement = document.getElementById("targets");
+      selectElement.value = newTargetIndex;
     }
   }
   // bestCar = cars.find(
@@ -156,4 +159,14 @@ function animate(time) {
   networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
   Visualizer.drawNetwork(networkCtx, bestCar.brain);
   requestAnimationFrame(animate);
+}
+
+async function carLoader(car) {
+  try {
+    const carInfo = await fetchCarData();
+    console.log(carInfo); // This will log the resolved carInfo object
+    car.load(carInfo); // Use the carInfo object to load the car
+  } catch (error) {
+    console.error("Error handling the car data:", error);
+  }
 }

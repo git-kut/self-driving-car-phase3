@@ -2,7 +2,7 @@ import World from "../js/world.js";
 
 async function fetchWorldData() {
   try {
-    const response = await fetch("world/saves/skovde.world");
+    const response = await fetch("world/saves/small_skovde_mark.world");
     if (!response.ok) {
       throw new Error(response.status);
     }
