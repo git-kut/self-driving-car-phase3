@@ -54,18 +54,18 @@ class World {
       envelope.draw(ctx, { fill: "#BBB", lineWidth: 15, stroke: "#BBB" });
     }
 
-    for (const marking of this.markings) {
-      if (!(marking instanceof Start) || showStartMark) {
-        marking.draw(ctx);
-      }
-    }
-
     for (const segment of this.graph.segments) {
       segment.draw(ctx, { color: "white", width: 8, dash: [10, 10] });
     }
 
     for (const seg of this.roadBorders) {
       seg.draw(ctx, { color: "white", width: 4 });
+    }
+
+    for (const marking of this.markings) {
+      if (!(marking instanceof Start) || showStartMark) {
+        marking.draw(ctx);
+      }
     }
 
     // if (this.corridor) {
