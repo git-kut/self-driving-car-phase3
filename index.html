@@ -8,7 +8,11 @@
   </head>
 
   <body>
-    <div class="dropdown-div">
+    <div id="loading">
+      <div class="spinner"></div>
+      <p class="loading-text">Loading...</p>
+    </div>
+    <div class="dropdown-div" id="content">
       <label class="dropdown">Going to</label>
       <select onchange="targetSelect()" name="targets" id="targets">
         <option value="0">Science Park</option>
@@ -26,5 +30,13 @@
       <canvas id="miniMapCanvas"></canvas>
     </div>
     <script type="module" src="main.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("content").style.display = "block";
+        }, 5000);
+      });
+    </script>
   </body>
 </html>
