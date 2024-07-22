@@ -21,7 +21,7 @@ class World {
   constructor(
     graph,
     roadWidth = 80,
-    roadRoundness = 10,
+    roadRoundness = 15,
     buildingWidth = 150,
     buildingMinLength = 150,
     spacing = 50,
@@ -68,11 +68,11 @@ class World {
       }
     }
 
-    // if (this.corridor) {
-    //   for (const seg of this.corridor) {
-    //     seg.draw(ctx, { color: "red", width: 4 });
-    //   }
-    // }
+    /* if (this.corridor) {
+      for (const seg of this.corridor) {
+        seg.draw(ctx, { color: "red", width: 2 });
+      }
+    } */
 
     // ctx.globalAlpha = 0.2;
     for (const car of this.cars) {

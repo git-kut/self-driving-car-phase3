@@ -104,7 +104,7 @@ function generateCars() {
         world,
         startingCoordinates.x,
         startingCoordinates.y,
-        25,
+        24,
         40,
         "AI",
         startingAngle,
