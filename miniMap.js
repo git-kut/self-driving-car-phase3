@@ -13,7 +13,13 @@ class MiniMap {
   update(viewPoint) {
     this.ctx.clearRect(0, 0, this.size, this.size);
     this.ctx.beginPath();
-    this.ctx.arc(this.size / 2, this.size / 2, this.size / 2, 0, 360);
+    this.ctx.arc(
+      this.canvas.width / 2,
+      this.canvas.height / 2,
+      this.size / 2,
+      0,
+      360
+    );
     this.ctx.fillStyle = "rgb(70, 70, 70)";
     this.ctx.fill();
     const scaler = 0.05;

@@ -21,11 +21,11 @@ const networkCanvas = document.getElementById("networkCanvas");
 networkCanvas.width = 330;
 
 const miniMapCanvas = document.getElementById("miniMapCanvas");
-miniMapCanvas.height = 335;
+miniMapCanvas.height = 330;
 miniMapCanvas.width = 330;
 
 carCanvas.height = window.innerHeight;
-networkCanvas.height = window.innerHeight - 300;
+networkCanvas.height = window.innerHeight - 330;
 
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
